@@ -1,25 +1,23 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { Card } from "./ui/card";
+import { Mail, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { Mail, MapPin, Send } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ContactSection() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,18 +31,20 @@ export default function ContactSection() {
         `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
       )}`;
 
-      // Open default email client
       window.location.href = mailtoLink;
 
-      toast.success("Opening your email client...");
+      toast.success("Opening email client...");
       
-      // Reset form after a short delay
-      setTimeout(() => {
-        setFormData({ name: "", email: "", subject: "", message: "" });
-        setIsSubmitting(false);
-      }, 1000);
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
     } catch (error) {
-      toast.error("Failed to open email client. Please try again.");
+      toast.error("Failed to open email client");
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -58,153 +58,139 @@ export default function ContactSection() {
     });
   };
 
-  const contactInfo = [
-    {
-      icon: <Mail className="h-6 w-6" />,
-      title: "Email",
-      value: "kuralarasan1905@gmail.com",
-      link: "mailto:kuralarasan1905@gmail.com",
-    },
-    {
-      icon: <MapPin className="h-6 w-6" />,
-      title: "Location",
-      value: "Chennai, Tamil Nadu, India",
-      link: null,
-    },
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
-    },
-  };
-
   return (
-    <section id="contact" className="py-20">
+    <section id="contact" className="py-20 relative" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
         >
-          <motion.div variants={itemVariants} className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Get In Touch</h2>
-            <div className="w-20 h-1 bg-primary mx-auto rounded-full mb-4"></div>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
-            {contactInfo.map((info, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary mb-4">
-                    {info.icon}
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">{info.title}</h3>
-                  {info.link ? (
-                    <a
-                      href={info.link}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {info.value}
-                    </a>
-                  ) : (
-                    <p className="text-muted-foreground">{info.value}</p>
-                  )}
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div variants={itemVariants}>
-            <Card className="p-8 max-w-3xl mx-auto">
-              <h3 className="text-2xl font-bold mb-6 text-center">Send Me a Message</h3>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-medium">
-                      Name
-                    </label>
-                    <Input
-                      id="name"
-                      name="name"
-                      placeholder="Your name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium">
-                      Email
-                    </label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="your.email@example.com"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="subject" className="text-sm font-medium">
-                    Subject
-                  </label>
-                  <Input
-                    id="subject"
-                    name="subject"
-                    placeholder="What's this about?"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="message" className="text-sm font-medium">
-                    Message
-                  </label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    placeholder="Tell me more about your project..."
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows={6}
-                    required
-                  />
-                </div>
-                <Button 
-                  type="submit" 
-                  size="lg" 
-                  className="w-full group"
-                  disabled={isSubmitting}
-                >
-                  <Send className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  {isSubmitting ? "Sending..." : "Send Message"}
-                </Button>
-              </form>
-            </Card>
-          </motion.div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">Get In Touch</h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-primary to-blue-600 mx-auto"></div>
         </motion.div>
+
+        <div className="grid md:grid-cols-2 gap-12">
+          {/* Contact Info */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="space-y-6"
+          >
+            <div>
+              <h3 className="text-2xl font-bold mb-4">Contact Information</h3>
+              <p className="text-muted-foreground mb-6">
+                Feel free to reach out for collaborations, opportunities, or just a friendly chat!
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-start gap-4 p-4 bg-card border border-border rounded-lg hover:border-primary transition-all">
+                <div className="p-3 rounded-full bg-primary/10">
+                  <Mail className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-1">Email</h4>
+                  <a
+                    href="mailto:kuralarasan1905@gmail.com"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    kuralarasan1905@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4 p-4 bg-card border border-border rounded-lg hover:border-primary transition-all">
+                <div className="p-3 rounded-full bg-primary/10">
+                  <MapPin className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-1">Location</h4>
+                  <p className="text-muted-foreground">Chennai, Tamil Nadu, India</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium mb-2">
+                  Name
+                </label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Your name"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium mb-2">
+                  Email
+                </label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="your.email@example.com"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="subject" className="block text-sm font-medium mb-2">
+                  Subject
+                </label>
+                <Input
+                  id="subject"
+                  name="subject"
+                  type="text"
+                  required
+                  value={formData.subject}
+                  onChange={handleChange}
+                  placeholder="What's this about?"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium mb-2">
+                  Message
+                </label>
+                <Textarea
+                  id="message"
+                  name="message"
+                  required
+                  value={formData.message}
+                  onChange={handleChange}
+                  placeholder="Your message..."
+                  rows={6}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full text-lg py-6"
+              >
+                {isSubmitting ? "Sending..." : "Send Message"}
+              </Button>
+            </form>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

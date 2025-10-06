@@ -23,7 +23,7 @@ export default function ParticleBackground() {
       size: number;
     }> = [];
 
-    const particleCount = 100;
+    const particleCount = 50;
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
@@ -36,8 +36,9 @@ export default function ParticleBackground() {
     }
 
     const animate = () => {
-      if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(100, 100, 255, 0.1)";
+      ctx.strokeStyle = "rgba(100, 100, 255, 0.1)";
 
       particles.forEach((particle, i) => {
         particle.x += particle.vx;
@@ -48,21 +49,18 @@ export default function ParticleBackground() {
 
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(100, 100, 255, 0.5)";
         ctx.fill();
 
-        particles.forEach((particle2, j) => {
+        particles.forEach((otherParticle, j) => {
           if (i === j) return;
-          const dx = particle.x - particle2.x;
-          const dy = particle.y - particle2.y;
+          const dx = particle.x - otherParticle.x;
+          const dy = particle.y - otherParticle.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < 120) {
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
-            ctx.lineTo(particle2.x, particle2.y);
-            ctx.strokeStyle = `rgba(100, 100, 255, ${0.2 * (1 - distance / 120)})`;
-            ctx.lineWidth = 0.5;
+            ctx.lineTo(otherParticle.x, otherParticle.y);
             ctx.stroke();
           }
         });
@@ -79,16 +77,13 @@ export default function ParticleBackground() {
     };
 
     window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none opacity-30 dark:opacity-20"
+      className="fixed inset-0 pointer-events-none z-0 opacity-30"
     />
   );
 }

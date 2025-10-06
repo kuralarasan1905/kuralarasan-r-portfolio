@@ -1,138 +1,177 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Card } from "./ui/card";
-import { GraduationCap, Calendar, MapPin } from "lucide-react";
+import { GraduationCap, Award, Calendar } from "lucide-react";
+
+const education = [
+  {
+    degree: "Bachelor of Engineering (CSE)",
+    institution: "Priyadarshini Engineering College",
+    university: "Anna University",
+    period: "08/2018 - 05/2022",
+    location: "Tamil Nadu",
+  },
+  {
+    degree: "HSC",
+    institution: "Vaani Matric School",
+    period: "2017 - 2018",
+    location: "Vaniyambadi",
+  },
+];
+
+const certifications = [
+  {
+    title: "Python Developer",
+    institution: "Besant Technologies",
+    description: "Course completed in Besant technologies",
+  },
+  {
+    title: "AWS Certified Cloud Practitioner Exam",
+    institution: "GeeksforGeeks",
+    description: "Course completed in GeeksforGeeks",
+  },
+];
+
+const projects = [
+  {
+    title: "Systematic IP Tracing of Participants in Academic Session",
+    period: "02/2022 - 05/2022",
+    description: "A project that involves analyzing IP addresses in academic sessions to ensure security.",
+    highlights: [
+      "Collected and analyzed data about the IP addresses of participants in academic sessions",
+      "Identified potential security threats based on IP tracking data",
+      "Developed using Python for data analysis and security monitoring",
+    ],
+  },
+];
 
 export default function EducationSection() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const education = [
-    {
-      degree: "Bachelor of Engineering in Computer Science",
-      institution: "Anna University",
-      location: "Chennai, India",
-      period: "2018 - 2022",
-      description: "Specialized in software engineering, data structures, and web technologies. Graduated with distinction.",
-      achievements: [
-        "CGPA: 8/10",
-        "Dean's List for Academic Excellence",
-        "Final Year Project: Systematic IP Tracing of Participants in Academic Session",
-      ],
-    },
-    {
-      degree: "Higher Secondary Certificate",
-      institution: " Vaani Matric Higher Secondary School",
-      location: "Chennai, India",
-      period: "2017 - 2018",
-      description: "Focused on Computer Science, Mathematics, and Physics.",
-      achievements: [
-        "Percentage: 92%",
-        "State Level Science Exhibition Winner",
-      ],
-    },
-  ];
-
-  const certifications = [
-    "Microsoft Certified: Azure Developer Associate",
-    "AWS Certified Solutions Architect",
-    ".NET Core Certification",
-    "React Professional Certification",
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
-    },
-  };
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
-    <section id="education" className="py-20 bg-muted/30">
+    <section id="education" className="py-20 relative" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
         >
-          <motion.div variants={itemVariants} className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Education</h2>
-            <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-          </motion.div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">Education</h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-primary to-blue-600 mx-auto"></div>
+        </motion.div>
 
-          <div className="space-y-6 mb-12">
+        {/* Education */}
+        <div className="mb-12">
+          <motion.h3
+            initial={{ opacity: 0, x: -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-2xl font-bold mb-6"
+          >
+            Academic Background
+          </motion.h3>
+          <div className="space-y-6">
             {education.map((edu, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                <Card className="p-6 hover:shadow-lg transition-shadow">
-                  <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-start mb-2">
-                        <GraduationCap className="h-6 w-6 text-primary mr-3 mt-1 flex-shrink-0" />
-                        <div>
-                          <h3 className="text-xl font-bold">{edu.degree}</h3>
-                          <p className="text-lg font-semibold text-muted-foreground">
-                            {edu.institution}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap gap-4 text-muted-foreground mb-3 ml-9">
-                        <div className="flex items-center">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          <span>{edu.location}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-1" />
-                          <span>{edu.period}</span>
-                        </div>
-                      </div>
-                      <p className="text-muted-foreground mb-3 ml-9">
-                        {edu.description}
-                      </p>
-                      <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-9">
-                        {edu.achievements.map((achievement, idx) => (
-                          <li key={idx}>{achievement}</li>
-                        ))}
-                      </ul>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -50 }}
+                animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+                transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
+                className="bg-card border border-border rounded-lg p-6 hover:border-primary transition-all duration-300 hover:shadow-lg"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-full bg-primary/10">
+                    <GraduationCap className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-xl font-bold mb-2">{edu.degree}</h4>
+                    <p className="text-primary font-semibold mb-2">{edu.institution}</p>
+                    {edu.university && (
+                      <p className="text-muted-foreground mb-2">{edu.university}</p>
+                    )}
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-4 w-4" />
+                        {edu.period}
+                      </span>
+                      <span>{edu.location}</span>
                     </div>
                   </div>
-                </Card>
+                </div>
               </motion.div>
             ))}
           </div>
+        </div>
 
-          <motion.div variants={itemVariants}>
-            <Card className="p-6">
-              <h3 className="text-2xl font-bold mb-4 flex items-center">
-                <GraduationCap className="h-6 w-6 text-primary mr-2" />
-                Certifications
-              </h3>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {certifications.map((cert, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-primary mr-2">✓</span>
-                    <span className="text-muted-foreground">{cert}</span>
+        {/* Certifications */}
+        <div className="mb-12">
+          <motion.h3
+            initial={{ opacity: 0, x: -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="text-2xl font-bold mb-6"
+          >
+            Training & Certifications
+          </motion.h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            {certifications.map((cert, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+                transition={{ duration: 0.6, delay: 0.6 + index * 0.1 }}
+                className="bg-card border border-border rounded-lg p-6 hover:border-primary transition-all duration-300 hover:shadow-lg"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-full bg-primary/10">
+                    <Award className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold mb-2">{cert.title}</h4>
+                    <p className="text-primary font-semibold mb-2">{cert.institution}</p>
+                    <p className="text-sm text-muted-foreground">{cert.description}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Final Year Project */}
+        <div>
+          <motion.h3
+            initial={{ opacity: 0, x: -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            className="text-2xl font-bold mb-6"
+          >
+            Academic Projects
+          </motion.h3>
+          {projects.map((project, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 50 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+              transition={{ duration: 0.6, delay: 0.9 }}
+              className="bg-card border border-border rounded-lg p-6 hover:border-primary transition-all duration-300 hover:shadow-lg"
+            >
+              <h4 className="text-xl font-bold mb-2">{project.title}</h4>
+              <p className="text-sm text-muted-foreground mb-3">{project.period}</p>
+              <p className="text-muted-foreground mb-4">{project.description}</p>
+              <ul className="space-y-2">
+                {project.highlights.map((highlight, idx) => (
+                  <li key={idx} className="flex gap-2 text-muted-foreground">
+                    <span className="text-primary">✓</span>
+                    <span>{highlight}</span>
                   </li>
                 ))}
               </ul>
-            </Card>
-          </motion.div>
-        </motion.div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

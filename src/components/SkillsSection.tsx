@@ -1,155 +1,71 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Card } from "./ui/card";
-import { Badge } from "./ui/badge";
+
+const skillCategories = [
+  {
+    title: "Frontend",
+    skills: ["Angular", "HTML", "CSS", "TypeScript", "Responsive Design"],
+  },
+  {
+    title: "Backend",
+    skills: ["ASP.NET Core", "Entity Framework", "RESTful API", "SignalR", "MediatR"],
+  },
+  {
+    title: "Database",
+    skills: ["SQL Server", "SSMS", "Database Management", "Data Migration"],
+  },
+  {
+    title: "Cloud & Tools",
+    skills: ["Azure", "AWS", "Git", "Github", "Windows"],
+  },
+  {
+    title: "Other Skills",
+    skills: ["Unit Testing", "Analyzing Data", "Microsoft Excel", "MS Word", "Python"],
+  },
+];
 
 export default function SkillsSection() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const skillCategories = [
-    {
-      category: "Backend",
-      skills: [
-        ".NET Core",
-        "ASP.NET",
-        "C#",
-        "Web API",
-        "Entity Framework",
-        "LINQ",
-        "SignalR",
-        "Microservices",
-      ],
-    },
-    {
-      category: "Frontend",
-      skills: [
-        "React",
-        "Angular",
-        "TypeScript",
-        "JavaScript",
-        "HTML5",
-        "CSS3",
-        "Bootstrap",
-        "Tailwind CSS",
-      ],
-    },
-    {
-      category: "Database",
-      skills: [
-        "SQL Server",
-        "PostgreSQL",
-        "MySQL",
-        "MongoDB",
-        "Redis",
-        "T-SQL",
-        "Stored Procedures",
-        "Query Optimization",
-      ],
-    },
-    {
-      category: "Tools & Technologies",
-      skills: [
-        "Git",
-        "Azure DevOps",
-        "Docker",
-        "Kubernetes",
-        "REST API",
-        "GraphQL",
-        "JWT",
-        "OAuth",
-      ],
-    },
-    {
-      category: "Cloud & DevOps",
-      skills: [
-        "Azure",
-        "AWS",
-        "CI/CD",
-        "GitHub Actions",
-        "Azure Functions",
-        "App Services",
-        "Azure SQL",
-        "Blob Storage",
-      ],
-    },
-    {
-      category: "Other Skills",
-      skills: [
-        "Agile/Scrum",
-        "Design Patterns",
-        "Unit Testing",
-        "TDD",
-        "Code Reviews",
-        "Problem Solving",
-        "Team Collaboration",
-        "Technical Documentation",
-      ],
-    },
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.4 },
-    },
-  };
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
-    <section id="skills" className="py-20 bg-muted/30">
+    <section id="skills" className="py-20 relative" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
         >
-          <motion.div variants={itemVariants} className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Skills</h2>
-            <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {skillCategories.map((category, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                <Card className="p-6 h-full hover:shadow-lg transition-shadow">
-                  <h3 className="text-xl font-bold mb-4 text-primary">
-                    {category.category}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {category.skills.map((skill, idx) => (
-                      <Badge
-                        key={idx}
-                        variant="secondary"
-                        className="text-sm py-1 px-3 hover:bg-primary hover:text-primary-foreground transition-colors"
-                      >
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">Skills</h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-primary to-blue-600 mx-auto"></div>
         </motion.div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {skillCategories.map((category, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
+              transition={{ duration: 0.6, delay: 0.1 + index * 0.1 }}
+              className="bg-card border border-border rounded-lg p-6 hover:border-primary transition-all duration-300 hover:shadow-lg hover:scale-105"
+            >
+              <h3 className="text-xl font-bold mb-4 text-primary">{category.title}</h3>
+              <div className="flex flex-wrap gap-2">
+                {category.skills.map((skill, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
