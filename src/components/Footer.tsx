@@ -20,7 +20,7 @@ export default function Footer() {
 
           <div className="flex gap-6">
             <a
-              href="https://linkedin.com/in/kuralarasan-r-45a1271ab"
+              href="https://www.linkedin.com/in/kuralarasan-r-45a1271ab"
               target="_blank"
               rel="noopener noreferrer"
               className="p-3 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
@@ -29,7 +29,7 @@ export default function Footer() {
               <Linkedin className="h-5 w-5 text-primary" />
             </a>
             <a
-              href="https://github.com/kuralarasan-r"
+              href="https://github.com/kuralarasan1905"
               target="_blank"
               rel="noopener noreferrer"
               className="p-3 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
