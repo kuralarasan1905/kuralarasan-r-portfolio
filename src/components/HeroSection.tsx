@@ -22,20 +22,30 @@ export default function HeroSection() {
     }
   };
 
-  const handleDownloadResume = (filename: string, displayName: string) => {
-    // Create a temporary anchor element to trigger download
-    const link = document.createElement("a");
-    link.href = `/${filename}`;
-    link.download = displayName; // This forces download instead of opening
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    
-    // Trigger the download
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    setShowResumeDialog(false);
+  const handleDownloadResume = async (url: string, filename: string) => {
+    try {
+      // Fetch the PDF from the URL
+      const response = await fetch(url);
+      const blob = await response.blob();
+      
+      // Create a download link
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = filename;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+      
+      setShowResumeDialog(false);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
   };
 
   return (
@@ -151,7 +161,10 @@ export default function HeroSection() {
               variant="outline"
               className="w-full justify-start h-auto py-4 hover:bg-primary/10"
               onClick={() =>
-                handleDownloadResume("resume.pdf", "Kuralarasan_Resume_BL.pdf")
+                handleDownloadResume(
+                  "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/Kuralarasan_Resume_BL-1759816233511.pdf",
+                  "Kuralarasan_Resume_BL.pdf"
+                )
               }
             >
               <FileText className="mr-3 h-5 w-5 text-primary" />
@@ -166,7 +179,10 @@ export default function HeroSection() {
               variant="outline"
               className="w-full justify-start h-auto py-4 hover:bg-primary/10"
               onClick={() =>
-                handleDownloadResume("resume.pdf", "Updated_Resume_BL.pdf")
+                handleDownloadResume(
+                  "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/Updated_Resume_BL-1759816233284.pdf",
+                  "Updated_Resume_BL.pdf"
+                )
               }
             >
               <FileText className="mr-3 h-5 w-5 text-primary" />
