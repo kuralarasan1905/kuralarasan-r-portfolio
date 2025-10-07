@@ -22,17 +22,19 @@ export default function HeroSection() {
     }
   };
 
-  const handleDownloadResume = (filename: string) => {
-    // Open in new tab to avoid iframe issues
-    const isInIframe = window.self !== window.top;
-    if (isInIframe) {
-      window.parent.postMessage(
-        { type: "OPEN_EXTERNAL_URL", data: { url: `/${filename}` } },
-        "*"
-      );
-    } else {
-      window.open(`/${filename}`, "_blank", "noopener,noreferrer");
-    }
+  const handleDownloadResume = (filename: string, displayName: string) => {
+    // Create a temporary anchor element to trigger download
+    const link = document.createElement("a");
+    link.href = `/${filename}`;
+    link.download = displayName; // This forces download instead of opening
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    
+    // Trigger the download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
     setShowResumeDialog(false);
   };
 
@@ -149,7 +151,7 @@ export default function HeroSection() {
               variant="outline"
               className="w-full justify-start h-auto py-4 hover:bg-primary/10"
               onClick={() =>
-                handleDownloadResume("resume.pdf")
+                handleDownloadResume("resume.pdf", "Kuralarasan_Resume_BL.pdf")
               }
             >
               <FileText className="mr-3 h-5 w-5 text-primary" />
@@ -164,7 +166,7 @@ export default function HeroSection() {
               variant="outline"
               className="w-full justify-start h-auto py-4 hover:bg-primary/10"
               onClick={() =>
-                handleDownloadResume("resume.pdf")
+                handleDownloadResume("resume.pdf", "Updated_Resume_BL.pdf")
               }
             >
               <FileText className="mr-3 h-5 w-5 text-primary" />
