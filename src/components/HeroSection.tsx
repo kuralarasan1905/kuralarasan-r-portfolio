@@ -24,24 +24,16 @@ export default function HeroSection() {
 
   const handleDownloadResume = async (url: string, filename: string) => {
     try {
-      // Fetch the PDF from the URL
       const response = await fetch(url);
       const blob = await response.blob();
-      
-      // Create a download link
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
       link.download = filename;
-      
-      // Trigger download
       document.body.appendChild(link);
       link.click();
-      
-      // Cleanup
       document.body.removeChild(link);
       window.URL.revokeObjectURL(downloadUrl);
-      
       setShowResumeDialog(false);
     } catch (error) {
       console.error("Download failed:", error);
@@ -62,7 +54,7 @@ export default function HeroSection() {
               transition={{ duration: 0.5 }}
             >
               <h2 className="text-xl md:text-2xl text-muted-foreground mb-4">
-                Hi, I'm
+                Hi, I&apos;m
               </h2>
             </motion.div>
 
@@ -153,7 +145,7 @@ export default function HeroSection() {
           <DialogHeader>
             <DialogTitle>Choose Resume Version</DialogTitle>
             <DialogDescription>
-              Select which resume version you'd like to download
+              Select which resume version you&apos;d like to download
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-3 mt-4">
@@ -189,7 +181,25 @@ export default function HeroSection() {
               <div className="text-left">
                 <div className="font-semibold">Updated Resume BL</div>
                 <div className="text-xs text-muted-foreground">
-                  Latest updated version
+                  Updated resume version
+                </div>
+              </div>
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full justify-start h-auto py-4 hover:bg-primary/10"
+              onClick={() =>
+                handleDownloadResume(
+                  "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/Latest_Updated_Resume-1771148367793.pdf",
+                  "Latest_Updated_Resume.pdf"
+                )
+              }
+            >
+              <FileText className="mr-3 h-5 w-5 text-primary" />
+              <div className="text-left">
+                <div className="font-semibold">Latest Updated Resume</div>
+                <div className="text-xs text-muted-foreground">
+                  Most recent version with all projects
                 </div>
               </div>
             </Button>
